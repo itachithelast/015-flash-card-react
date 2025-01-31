@@ -75,19 +75,46 @@ class Card extends Component {
   };
 
   handleReject = () => {
-    this.setState({ dialogBox: false, isConfirmed: false },()=>{this.updateCard()});
-    
+    this.setState({ dialogBox: false, isConfirmed: false }, () => {
+      this.updateCard();
+    });
   };
 
-  updateCard = ()=>{
-    this.state.pendingAction === "next" ? this.setState({id: this.state.id+=1}) : this.setState({id: this.state.id-=1})
-  }
+  updateCard = () => {
+    this.state.pendingAction === "next"
+      ? this.setState({
+          id:
+            this.state.id === this.context.questions.length
+              ? 1
+              : (this.state.id += 1),
+        })
+      : this.setState({
+          id:
+            this.state.id === 1
+              ? this.context.questions.length
+              : (this.state.id -= 1),
+        });
+  };
+
+  showDialog = () => {
+    if (this.cardItem().progress !== 100) {
+      return (
+        <DialogBox
+          onConfirm={this.handleConfirm}
+          onReject={this.handleReject}
+        />
+      );
+    } else {
+      this.state.dialogBox = false;
+      this.updateCard()
+    }
+  };
 
   showData = () => {
     if (this.state.isQuestion) {
-      return this.cardItem().question;
+      return <h1>{this.cardItem().question}</h1>;
     } else {
-      return this.cardItem().answer;
+      return <h4>{this.cardItem().answer}</h4>;
     }
   };
 
@@ -111,15 +138,8 @@ class Card extends Component {
         </div>
         <div className="card mt-2">
           <div className="card card-section mb-1 p-5 text-center justify-content-center">
-            {this.state.dialogBox && (
-              <DialogBox
-                onConfirm={this.handleConfirm}
-                onReject={this.handleReject}
-              />
-            )}
-            {!this.state.dialogBox && (
-              <h1 className="text-center">{this.showData()}</h1>
-            )}
+            {this.state.dialogBox && this.showDialog()}
+            {!this.state.dialogBox && this.showData()}
           </div>
           <div className="card bg-body-tertiary">
             <div className="justify-space-between justify-content-center row m-1">

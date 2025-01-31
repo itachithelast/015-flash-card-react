@@ -7,3 +7,7 @@
 .card-section{
     height: 40vh;
 }
+.container{
+    max-width: 700px;
+    margin: 0 auto !important;
+}
